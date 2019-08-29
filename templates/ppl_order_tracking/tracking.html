@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+
+{% for po in purchase_order %}
+
+{% endfor %}
+
+<div class="container">
+
+<div class="float-right"><a href="http://{{ request.META.HTTP_HOST }}/ppl-django-admin/ppl_order_tracking/">Purchase Order Admin</a></div>
+
+<h2>Purchase Orders</h2>
+
+<form action="{% url 'ppl_order_tracking:search_results' %}" method="get">
+  <input name="q" type="text" class="btn-sm" size="70">
+  <button class="form-submit btn-blue" title="Search" type="submit" value="Search">Search</button>
+</form>
+<br />
+
+<table class="table">
+<tbody>
+<tr><th>PO Number</th><th>Items Ordered</th><th>Items Received</th><th>Vender</th><th>Date Created</th><th>Created By</th><th>Status</th></tr>
+{% for po in purchase_order %} {% for items in items_received_per_po %}
+
+{% if po.po_number == items.po_number_id %}
+<tr>
+<td><a href="{% url 'ppl_order_tracking:detail' po.po_number %}">{{ po.po_number }}</a></td>
+<td>{% if po.items_ordered == 0 %} Standing Order {% endif %} {% if po.items_ordered > 0 %} {{ po.items_ordered }} {% endif %} </td>
+<td> {{ items.sum_items }}</td>
+<td> {{ po.vender }}</td>
+<td> {{ po.creation_date|date:'F j, Y' }}</td>
+{% for logs in logs %}
+{% if po.po_number == logs.object_id %}
+{% for user in user %}{% if user.id == logs.user_id %}<td>{{ user.first_name }} {{ user.last_name }}</td> {% endif %} {% endfor %}
+{% endif %}
+{% endfor %}
+{% if po.items_ordered > items.sum_items or po.items_ordered == 0 %}<td class="text-warning">In Progress</td> {% endif %}
+{% if po.items_ordered == items.sum_items %}<td class="text-success">Completed</td> {% endif %}
+{% if items.sum_items > po.items_ordered and po.items_ordered > 0 %}<td class="text-danger">Over Filled</td> {% endif %}
+
+{% endif %}
+</tr>
+{% endfor %}{% endfor %}
+
+</tbody>
+</table>
+<br />
+<br />
+
+<strong>Total Items Ordered: {{ total_items_ordered.items_ordered__sum }}</strong>
+
+
+<br />
+<br />
+
+<strong>Total Items Received: {{ total_items_received.items_received__sum }}</strong><br /><br />
+
+<strong>Items Received last month {{ previous_month_name }}: {{ previous_month_items.sum_month }}</strong><br />
+<strong>Items Received this month {{ now|date:"F Y" }}: {{ current_month_items.sum_month }}</strong>
+
+
+
+</div>
+{% endblock %}

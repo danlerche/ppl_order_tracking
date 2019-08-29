@@ -1,0 +1,31 @@
+<!-- templates/search_results.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+<h1>Search Results</h1>
+
+
+  {% for po in object_list %}
+
+<table class="table">
+<tbody>
+  <tr><th>PO Number</th><th>Items Ordered</th><th>Vender</th><th>Date Created</th></tr>
+  <tr>
+    <td><a href="{% url 'ppl_order_tracking:detail' po.po_number %}">{{po.po_number}}</td>
+    <td>{{ po.items_ordered }}</td>
+    <td>{{ po.vender}} </td>
+    <td> {{ po.creation_date|date:'F j, Y' }}</td>
+  </tr>
+</tbody>
+</table>
+
+<div><a href="http://{{ request.META.HTTP_HOST }}/purchase-order/">Home</a></div>
+
+</div>
+
+
+
+  {% endfor %}
+
+  {% endblock %}

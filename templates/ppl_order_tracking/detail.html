@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+
+<h1>{{ po_details.po_number }}</h1>
+
+<div><strong>Items Ordered: {{ po_details.items_ordered }}</strong></div>
+
+
+<table class="table">
+
+<tr><td>Items Received</td><td>Date Received</td></tr>
+{% for po_info in po_info %}
+
+<tr>
+<td>{{ po_info.items_received }}</td>
+<td>{{ po_info.date_received }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+
+<div><a href="http://{{ request.META.HTTP_HOST }}/ppl-django-admin/ppl_order_tracking/purchaseorder/{{ po_details.po_number }}/change">Edit Purchase Order</a></div>
+<div><a href="http://{{ request.META.HTTP_HOST }}/purchase-order/">Home</a></div>
+
+<br />
+{% endblock %}
+</div>
